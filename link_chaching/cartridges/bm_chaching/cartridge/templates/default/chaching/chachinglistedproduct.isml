@@ -1,0 +1,53 @@
+<div class="wrapper-header">
+	<div class="section-header">
+		${Resource.msg('chaching.productlist.title','chaching',null)}
+	</div>
+</div>
+<div class="user-guide">
+	${Resource.msg('chaching.product.status.view','chaching',null)}
+</div>
+<div class="last-sync">
+	<div class="last-sync-title">${Resource.msg('chaching.last.sync','chaching',null)}</div>
+	<div class="last-sync-time-product-list">${pdict.listedLastSync}</div>
+</div>
+<div class="item-details d-flex justify-between">
+	<div class="listed-item d-flex">
+		<div class="item-svg ">
+			<img src="${URLUtils.staticURL('/icons/overview-listed-icon.png')}" alt="Chaching overview listed">
+		</div>
+		<div class="general">
+			<div class="item-title">
+				${Resource.msg('chaching.listed','chaching',null)}
+			</div>
+			<div class="item-value" id="product-listed">
+				<isprint value="${pdict.product ? pdict.product.listed : ''}" encoding="htmlcontent"/>
+			</div>
+		</div>
+	</div>
+	<div class="errors-item d-flex">
+		<div class="item-svg ">
+			<img src="${URLUtils.staticURL('/icons/overview-errors-icon.png')}" alt="Chaching overview errors">
+		</div>
+		<div class="general">
+			<div class="item-title">
+				${Resource.msg('chaching.errors','chaching',null)}
+			</div>
+			<div class="item-value" id="product-errors">
+				<isprint value="${pdict.product ? pdict.product.errors : ''}" encoding="htmlcontent"/>
+			</div>
+		</div>
+	</div>
+	<div class="paused-item d-flex">
+		<div class="item-svg ">
+			<img src="${URLUtils.staticURL('/icons/overview-pending-icon.png')}" alt="Chaching overview pending">
+		</div>
+		<div class="general">
+			<div class="item-title">
+				${Resource.msg('chaching.pending','chaching',null)}
+			</div>
+			<div class="item-value" id="product-pending">
+				<isprint value="${pdict.product ? pdict.product.pending : ''}" encoding="htmlcontent"/>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,3 @@
+<div class="chaching-logo">
+	<img class="logo" src="${URLUtils.staticURL('/icons/chaching-logo-white.png')}" alt="Chaching">
+</div>

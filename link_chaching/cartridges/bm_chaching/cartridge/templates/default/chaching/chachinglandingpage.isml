@@ -1,0 +1,32 @@
+<!--- TEMPLATENAME: homelanding.isml --->
+<isdecorate template="application/menuframe">
+ 
+	<iscontent type="text/html" charset="UTF-8"> 
+	<isinclude template="custom/modules" /> 
+	<isbreadcrumbs bcurl1="${URLUtils.url('Chaching-Show')}" 
+		bctext1="${Resource.msg('chaching.landing.page','chaching',null)}" />
+		
+	<div class="chaching-wrapper landing-page">
+		<isinclude template="chaching/chachingheader">
+		<div class="box">
+			<div class="user-guide">
+				${Resource.msg('chaching.landing.descriptiontext','chaching',null)}
+			</div>
+			
+			<div class="button-holder">
+				<a href="${URLUtils.url('Chaching-SignUp')}">
+					<button name="connect-button" class="button button-bg-blue-white">${Resource.msg('chaching.connect.button','chaching',null)}</button>
+				</a>
+			</div>
+		</div>
+		<footer>
+			<div class="about">
+				${Resource.msg('chaching.landing.footer.text1','chaching',null)}
+				<div class="learn-more">
+					${Resource.msg('chaching.landing.footer.text2','chaching',null)}  <a href="https://www.chaching.me/" target="_blank">chaching.me</a>
+				</div>
+			</div>
+			<div class="promo-image"></div>
+		</footer>
+	</div>
+</isdecorate>

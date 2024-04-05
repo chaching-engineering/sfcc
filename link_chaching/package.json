@@ -1,0 +1,30 @@
+{
+  "name": "chaching",
+  "version": "24.1.0",
+  "description": "Chaching link cartridge",
+  "main": "index.js",
+  "engines": {
+    "node": ">=4.0"
+  },
+  "scripts": {
+    "lint": "npm run lint:js",
+    "lint:js": "sgmf-scripts --lint js"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^5.0.3",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-sitegenesis": "~1.0.0",
+    "sgmf-scripts": "^2.4.2"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "ie >= 10"
+  ],
+  "packageName": "int_chaching_sfra",
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+<iscomment>
+    This template renders a static breadcrumb navigation. The template
+    can be called with two optional breadcrumb steps. Each breadcrumb
+    step consists of two value, one for the display text and one
+    for the URL to call.
+</iscomment>
+<div class="breadcrumb">
+<a class="breadcrumb-element" href="${URLUtils.url('ViewApplication-CompressMenuGroup','MenuGroupID','','OverviewPage','SiteNavigationBar-ShowSiteOverview')}">Merchant Tools</a>
+> <a class="breadcrumb-element" href="${URLUtils.url('SiteNavigationBar-ShowMenuitemOverview','CurrentMenuItemId','customsitemenuextension_id01')}">Chaching</a>
+
+    <iscomment>FIRST BREADCRUMB</iscomment>
+    <isif condition="${pdict.bctext1}">
+        <isif condition="${pdict.bcurl1}">
+            > <a class="breadcrumb-element" href="${pdict.bcurl1}" title="${pdict.bctext1}"><isprint value="${pdict.bctext1}" /></a>
+        <iselsif condition="${!pdict.bcurl1}">
+            > <span class="breadcrumb-element" title="${pdict.bctext1}"><isprint value="${pdict.bctext1}" /></span>
+        </isif>
+    </isif>
+
+    <iscomment>SECOND BREADCRUMB</iscomment>
+    <isif condition="${pdict.bctext2}">
+        <isif condition="${pdict.bcurl2}">
+            > <a class="breadcrumb-element" href="${pdict.bcurl2}" title="${pdict.bctext2}"><isprint value="${pdict.bctext2}" /></a>
+        <iselsif condition="${!pdict.bcurl2}">
+            > <span class="breadcrumb-element" title="${pdict.bctext2}"><isprint value="${pdict.bctext2}" /></span>
+        </isif>
+    </isif>
+
+    <iscomment>THIRD BREADCRUMB</iscomment>
+    <isif condition="${pdict.bctext3}">
+        <isif condition="${pdict.bcurl3}">
+            > <a class="breadcrumb-element" href="${pdict.bcurl3}" title="${pdict.bctext3}"><isprint value="${pdict.bctext3}" /></a>
+        <iselsif condition="${!pdict.bcurl3}">
+            > <span class="breadcrumb-element" title="${pdict.bctext3}"><isprint value="${pdict.bctext3}" /></span>
+        </isif>
+    </isif>
+</div>

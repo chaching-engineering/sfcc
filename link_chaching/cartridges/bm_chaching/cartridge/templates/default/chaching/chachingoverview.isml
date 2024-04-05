@@ -1,0 +1,56 @@
+<div class="overview-wrapper">
+	<div class="section-header">
+		${Resource.msg('chaching.overview.title','chaching',null)}
+	</div>
+	<div class="refresh-button right">
+		<button type="button" class="button button-bg-white-blue" id="overview-refresh" data-action="${URLUtils.url('Chaching-Refresh')}">
+			<img src="${URLUtils.staticURL('/icons/chaching-refresh-icon.png')}" alt="Chaching overview refresh">
+			<span>
+				${Resource.msg('chaching.overview.refresh','chaching',null)}
+			</span>
+		</button>
+	</div>
+</div>
+<div class="last-sync">
+	<span class="last-sync-title">${Resource.msg('chaching.last.sync','chaching',null)}:</span>
+	<span class="last-sync-time-overview">${pdict.overviewLastSync || '--'}</span>
+</div>
+
+<div class="d-flex justify-between">
+	<div class="account-connect-status d-flex">
+		<div class="chaching-overview-logo">
+			<img class="logo" src="${URLUtils.staticURL('/icons/chaching_overview_logo.png')}" alt="Chaching">
+		</div>
+		<div>
+			<isif condition="${pdict.status === true}">
+				<isset name="accountstatus" value="Connected" scope="page" />
+			<iselse>
+				<isset name="accountstatus" value="Disconnected" scope="page" />
+			</isif>
+			<input type="hidden" id="connect-status" value="${accountstatus}" />
+			<span 
+				<isif condition="${pdict.status === true}">
+		             class="status connected"
+		         <iselse>
+		             class="status disconnected"
+		         </isif>
+			>
+				<isprint value="${accountstatus}" encoding="htmlcontent"/>
+			</span>
+		</div>
+	</div>
+	<div class="menu-button right">
+		<span class="menu-button-dots">
+			<svg width="1.8rem" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#000" class="w-6 h-6">
+			  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+			</svg>
+		</span>
+		<div class="btnDisconnect">
+			<button type="button" class="chaching-disconnect-button" data-toggle="modal">
+				${Resource.msg('chaching.disconnect.button','chaching',null)}
+			</button>
+		</div>
+	</div>
+</div>
+
+<isinclude template="chaching/chachingdisconnectmodal">

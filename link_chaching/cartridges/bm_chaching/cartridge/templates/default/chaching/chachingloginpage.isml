@@ -1,0 +1,42 @@
+<isdecorate template="application/menuframe">
+ 
+	<iscontent type="text/html" charset="UTF-8"> 
+	<isinclude template="custom/modules" /> 
+	<isbreadcrumbs bcurl1="${URLUtils.url('Chaching-Login')}" 
+		bctext1="${Resource.msg('chaching.login.page','chaching',null)}" />
+		
+	<div class="chaching-wrapper">
+		<isinclude template="chaching/chachingheader">
+		<div class="info-wrapper">
+			<isinclude template="chaching/chachingoverview" />
+			<div class="user-guide">
+				${Resource.msg('chaching.signup.details','chaching',null)}
+			</div>
+			
+			<div class="user-guide login-form-holder">
+				<form action="${URLUtils.url('Chaching-SubmitLoginForm')}" name="chaching-login" class="login" method="POST" name="chaching-login-form">
+					<div class="form-group">
+				        <label class="form-control-label" for="login-form-email">
+				            ${Resource.msg('label.input.login.email', 'chaching', null)}
+				        </label>
+				        <input type="email" id="login-form-email" required aria-required="true" class="form-control required" aria-describedby="form-email-error" name="loginEmail" value="">
+				        <div class="invalid-feedback" id="form-email-error"></div>
+				    </div>
+				
+				    <div class="form-group">
+				        <label class="form-control-label" for="login-form-password">
+				                ${Resource.msg('label.input.login.password', 'chaching', null)}
+				        </label>
+				        <input type="password" id="login-form-password" required aria-required="true" class="form-control required" aria-describedby="form-password-error" name="loginPassword">
+				    	<div class="invalid-feedback" id="form-email-error"></div>
+				    </div>
+				    <div class="button-holder">
+				    	<button type="submit" class="button chaching-login button-bg-blue-white">${Resource.msg('button.text.loginform', 'chaching', null)}</button>
+				    </div>
+				</form>
+			</div>
+		</div>
+
+		<isinclude template="chaching/resourceemailus">
+	</div>
+</isdecorate>

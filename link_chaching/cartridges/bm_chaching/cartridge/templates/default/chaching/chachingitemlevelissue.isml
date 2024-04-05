@@ -1,0 +1,23 @@
+<script src="${URLUtils.staticURL('/js/jquery.dataTables.js')}"></script>
+<link rel="stylesheet" href="${URLUtils.staticURL('css/jquery.dataTables.css')}" />
+<div class="wrapper-header">
+	<div class="section-header">
+		${Resource.msg('chaching.item.level.issue.title','chaching',null)}
+	</div>
+</div>
+<div class="user-guide">
+	${Resource.msg('chaching.item.level.issue.description','chaching',null)}
+</div>
+ <isset name="ajaxUrl" value="${URLUtils.https('Chaching-CreateJson','accountId', pdict.accountId)}" scope="page">
+<div class="item-level-issue-list">
+	<input type="hidden" name="ajax-url" id="ajax-url" value="${URLUtils.https('Chaching-CreateJson','accountId', pdict.accountId)}">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="itemIssuelevelTable">
+		<thead>
+			<tr>
+				<th class="issue_list_table_header left n s">${Resource.msg('product.name','chaching',null)}</th>
+				<th class="issue_list_table_header left n s">${Resource.msg('product.sku','chaching',null)}</th>
+				<th class="issue_list_table_header left n s left">${Resource.msg('chaching.issue.description','chaching',null)}</th>
+			</tr>
+		</thead>
+	</table>
+</div>

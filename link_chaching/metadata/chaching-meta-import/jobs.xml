@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="Chaching-Product-Export-Full-RefArch">
+        <description>All products export of Chaching</description>
+        <parameters/>
+        <flow>
+            <context site-id="Sites"/>
+            <step step-id="chaching-catalog-export-full-xml" type="ExportCatalog" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="CatalogID">apparel-m-catalog</parameter>
+                    <parameter name="ExportCategories">false</parameter>
+                    <parameter name="ExportProducts">true</parameter>
+                    <parameter name="ExportCategoryAssignments">false</parameter>
+                    <parameter name="ExportProductOptions">false</parameter>
+                    <parameter name="ExportRecommendations">false</parameter>
+                    <parameter name="ExportVariationAttributes">false</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-catalog</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="chaching-export-listpricebook" type="ExportPriceBook" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="PriceBookID">usd-m-list-prices</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-listpricebook-full</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="chaching-export-salepricebook" type="ExportPriceBook" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="PriceBookID">usd-m-sale-prices</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-salepricebook-full</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="script-chaching-deleted-products-delta" type="custom.ChachingDeletedProductsDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="set-last-exported-time" type="custom.ChachingSetLastExportedTime" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ObjectTypeName">product</parameter>
+                </parameters>
+            </step>
+            <step step-id="script-chaching-product-export-full" type="custom.ChachingProductExportFull" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-listpricebook-prepare-cache" type="custom.ChachingListPricebookPrepareCache" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-salepricebook-prepare-cache" type="custom.ChachingSalePricebookPrepareCache" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="chaching-export-inventory" type="ExportInventoryLists" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="InventoryListIDs">inventory_m</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-inventory-full</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="script-chaching-inventory-prepare-cache" type="custom.ChachingInventoryPrepareCache" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2024-01-16Z</date>
+                <time>09:49:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Chaching-Product-Export-Delta-RefArch">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="Sites"/>
+            <step step-id="chaching-listpricebook-export-xml-delta" type="ExportPriceBook" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="PriceBookID">usd-m-list-prices</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-listpricebook-delta</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="chaching-salepricebook-export-xml-delta" type="ExportPriceBook" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="PriceBookID">usd-m-sale-prices</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-salepricebook-delta</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="set-last-exported-time" type="custom.ChachingSetLastExportedTime" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ObjectTypeName">product</parameter>
+                </parameters>
+            </step>
+            <step step-id="chaching-catalog-export-delta-xml" type="CatalogDeltaExport" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="CatalogIDs">apparel-m-catalog</parameter>
+                    <parameter name="Consumers">Everyone</parameter>
+                    <parameter name="ExportFile">chaching/export/RefArch/catalog</parameter>
+                    <parameter name="MasterProductExport">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="script-chaching-unzip-delta-files" type="custom.ChachingUnzipDeltaFiles" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-product-export-delta" type="custom.ChachingProductExportDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-listpricebook-delta" type="custom.ChachingListPricebookDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-salepricebook-delta" type="custom.ChachingSalePricebookDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="chaching-export-inventory-delta" type="ExportInventoryLists" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="InventoryListIDs">inventory_m</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-inventory-delta</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="script-chaching-inventory-delta" type="custom.ChachingInventoryDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-deleted-products-delta" type="custom.ChachingDeletedProductsDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2024-02-01Z</date>
+                <time>07:26:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Chaching-Order-Export">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="chaching-order-Export" type="custom.ChachingOrderExport" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="set-last-exported-time" type="custom.ChachingSetLastExportedTime" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ObjectTypeName">order</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-recurring enabled="false">
+                <recurrence>
+                    <date-from>2024-01-24Z</date-from>
+                    <start-time>02:27:00.000Z</start-time>
+                    <interval>1d</interval>
+                    <day-of-week/>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+
+</jobs>

@@ -1,0 +1,9 @@
+<iscontent type="text/html" charset="UTF-8" compact="true">
+<isinclude template="pagecomponents/htmlheadinclude">
+<isinclude url="${URLUtils.url('SiteNavigationBar-IncludeFrameTop','SelectedMenuItem',pdict.SelectedMenuItem,'ModulePipeline',pdict.CurrentPipelineName,'ModulePipelineStart',pdict.CurrentStartNodeName,'CurrentMenuItemId',pdict.CurrentMenuItemId)}">
+
+<div class="chaching-module">
+	<isreplace/>
+</div>
+
+<isinclude url="${URLUtils.url('SiteNavigationBar-IncludeFrameBottom')}">

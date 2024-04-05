@@ -1,0 +1,283 @@
+{
+    "step-types": {
+        "script-module-step": [
+            {
+                "@type-id":"custom.ChachingProductExportFull",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Export products to Chaching",
+                "function":"fullExport",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingListPricebookPrepareCache",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare list pricebook cache to compare for delta product export",
+                "function":"setListPriceCache",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingSalePricebookPrepareCache",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare sale pricebook cache to compare for delta product export",
+                "function":"setSalePriceCache",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingListPricebookDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare list pricebook cache to compare for delta product export",
+                "function":"deltaListPrice",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingSalePricebookDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare sale pricebook cache to compare for delta product export",
+                "function":"deltaSalePrice",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingInventoryPrepareCache",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare inventory cache to compare for delta product export",
+                "function":"setInventoryCache",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingInventoryDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Prepare inventory cache to compare for delta product export",
+                "function":"deltaInventory",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingSetLastExportedTime",
+                "module":"bm_chaching/cartridge/scripts/jobs/setChachingLastExportedTime.js",
+                "description":"Sets last exported time in custom cache",
+                "function":"Run",
+                "parameters":{
+                    "parameter":[
+                        {
+                            "@name":"ObjectTypeName",
+                            "description":"Name of the object for which time needs to be set",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "default-value":""
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code":"ERROR",
+                            "description": "Step execution failed."
+                        },
+                        {
+                            "@code":"FINISHED",
+                            "description":"Step execution finished successfully."
+                        }
+                    ]
+                }
+            },{
+                "@type-id":"custom.ChachingUnzipDeltaFiles",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Unzip Delta Files to process XML",
+                "function":"unzipDelta",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingProductExportDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Read and process Delta XML",
+                "function":"readDeltaXML",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingDeletedProductsDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"Delta process deleted products to delete them from Chaching API",
+                "function":"deltaDeletedProducts",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            }
+        ],
+        "chunk-script-module-step": [
+            {
+                "@type-id":"custom.ChachingOrderExport",
+                "@supports-parallel-execution":"false",
+                "@supports-site-context":"true",
+                "@supports-organization-context":"false",
+                "description":"Export chaching order for the specific site'",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingOrderExport.js",
+                "before-step-function":"beforeStep",
+                "read-function":"read",
+                "process-function":"process",
+                "write-function":"write",
+                "chunk-size":1000,
+                "transactional":"false",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code":"ERROR",
+                            "description": "Step execution failed."
+                        },
+                        {
+                            "@code":"OK",
+                            "description":"Step execution finished successfully."
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

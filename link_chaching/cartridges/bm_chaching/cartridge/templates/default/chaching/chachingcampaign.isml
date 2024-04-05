@@ -1,0 +1,34 @@
+<div class="wrapper-header">
+	<div class="section-header">
+		${Resource.msg('chaching.campaign.title','chaching',null)}
+	</div>
+	<div class="campaign-button right">
+	<isset name="link" value="${pdict.apiEnv === 'live' ? Resource.msg('chaching.live.go.to.campaign.url','chaching',null) : Resource.msg('chaching.demo.go.to.campaign.url','chaching',null)}" scope="page" />
+		<a href="${link}" target="_blank">
+			<button type="button" class="button button-bg-white-blue" value="" id="campaign-go-to">
+				<img src="${URLUtils.staticURL('/icons/open-new-tab-icon.png')}" alt="Chaching overview open in new tab">
+				<span >
+					${Resource.msg('chaching.go.to.campaigns','chaching',null)}
+				</span>
+			</button>
+		</a>
+	</div>
+</div>
+<div class="user-guide">
+	${Resource.msg('chaching.campaign.status.view','chaching',null)}
+</div>
+<div class="item-details">
+	<div class="listed-item d-flex">
+		<div class="item-svg">
+			<img src="${URLUtils.staticURL('/icons/overview-listed-icon.png')}" alt="Chaching overview listed">
+		</div>
+		<div class="general">
+			<div class="item-title">
+				${Resource.msg('chaching.listed','chaching',null)}
+			</div>
+			<div class="item-value" id="campaign-active">
+				<isprint value="${pdict.campaign ? pdict.campaign.active : ''}" encoding="htmlcontent"/>
+			</div>
+		</div>
+	</div>
+</div>

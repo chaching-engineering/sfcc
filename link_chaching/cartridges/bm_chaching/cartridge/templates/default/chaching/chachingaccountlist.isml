@@ -1,0 +1,49 @@
+<isdecorate template="application/menuframe">
+
+	<iscontent type="text/html" charset="UTF-8">
+	<isinclude template="custom/modules" />
+	<isbreadcrumbs bcurl1="${URLUtils.url('Chaching-AccountList')}"
+		bctext1="${Resource.msg('chaching.account.list','chaching',null)}" />
+
+	<div class="chaching-wrapper">
+		<isinclude template="chaching/chachingheader">
+		<div class="info-wrapper">
+			<isinclude template="chaching/chachingoverview" />
+			<div class="user-guide">
+				${Resource.msg('chaching.select.account','chaching',null)}
+			</div>
+			<div class="user-guide form-group login-form-holder">
+		        <label class="form-control-label select" for="account-selection-list">
+		            ${Resource.msg('account.label', 'chaching', null)}
+		        </label>
+		        <isif condition="${pdict.accounts.length > 1}">
+			        <select name="account-selection-list" id="account-selection-list" class="form-control input-select">
+						<option value="" selected="selected">${Resource.msg('general.select','chaching',null)}</option>
+						<isloop items="${pdict.accounts}" var="account">
+							<option value="${account.id}">${account.name}</option>
+						</isloop>
+		            </select>
+		            <iselse>
+						<select name="account-selection-list" id="account-selection-list" class="form-control input-select">
+							<isloop items="${pdict.accounts}" var="account">
+								<option value="${account.id}">${account.name}</option>
+							</isloop>
+						</select>
+		          </isif>
+		    </div>
+		    <div class="button-holder">
+			    <form name="connectaccount" action="${URLUtils.url('Chaching-AccountConnect')}" method="post">
+					<isif condition="${pdict.accounts.length > 1}">
+						<input type="hidden" name="account-id" id="chaching-account-id" value="">
+						<button type="submit" class="button button-bg-blue-white" id="connect-account-submit" disabled>${Resource.msg('chaching.account.connect.button','chaching',null)}</button>
+				    <iselseif condition="${pdict.accounts.length === 1}">
+						<input type="hidden" name="account-id" id="chaching-account-id" value="${pdict.accounts[0].id}">
+						<button type="submit" class="button button-bg-blue-white" id="connect-account-submit">${Resource.msg('chaching.account.connect.button','chaching',null)}</button>
+					</isif>
+			    </form>
+			 </div>
+		</div>
+
+		<isinclude template="chaching/resourceemailus">
+	</div>
+</isdecorate>

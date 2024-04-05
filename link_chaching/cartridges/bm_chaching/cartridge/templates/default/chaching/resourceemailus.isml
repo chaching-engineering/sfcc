@@ -1,0 +1,21 @@
+<div class="email-wrapper">
+	<div class="d-flex">
+		<div>
+			<div class="section-header">${Resource.msg('chaching.resources.title','chaching',null)}</div>
+			<div class="contact-us">
+				<span>${Resource.msg('chaching.contact.support','chaching',null)}</span>
+			</div>
+		</div>
+		<div class="email-us-button right">
+			<a href="${Resource.msg('chaching.email.us.link','chaching',null)}" target="_blank">
+				<button type="button" class="button button-bg-white-blue" value="" id="email-us">
+					<span >
+						<svg width="1rem" viewBox="0 -5 20 20" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>email [#4E67F4]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-340.000000, -922.000000)" fill="#4E67F4"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M294,774.474 L284,765.649 L284,777 L304,777 L304,765.649 L294,774.474 Z M294.001,771.812 L284,762.981 L284,762 L304,762 L304,762.981 L294.001,771.812 Z" id="email-[#4E67F4]"> </path> </g> </g> </g> </g></svg>
+					</span>
+					${Resource.msg('chaching.email.us.button','chaching',null)}
+				</button>
+			</a>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"><isinclude template="application/appresources"/></script>

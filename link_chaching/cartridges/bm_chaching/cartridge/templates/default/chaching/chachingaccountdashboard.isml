@@ -1,0 +1,29 @@
+<isdecorate template="application/menuframe">
+
+	<iscontent type="text/html" charset="UTF-8">
+	<isinclude template="custom/modules" />
+	<isbreadcrumbs bcurl1="${URLUtils.url('Chaching-AccountConnect')}"
+		bctext1="${Resource.msg('chaching.dashboard.page.title','chaching',null)}" />
+
+	<div class="chaching-wrapper">
+		<isinclude template="chaching/chachingheader">
+		<div class="info-wrapper">
+			<isinclude template="chaching/chachingoverview" />
+		</div>
+		<div class="campaign-wrapper">
+			<isinclude template="chaching/chachingcampaign" />
+		</div>
+
+		<div class="product-wrapper">
+			<isinclude template="chaching/chachinglistedproduct" />
+		</div>
+
+		<div class="issues-wrapper">
+			<isinclude template="chaching/chachingitemlevelissue" />
+		</div>
+
+		<isinclude template="chaching/resourceemailus">
+	</div>
+	<div class="image-loader"><img src="${URLUtils.staticURL('/icons/loading_medium.gif')}" alt="loading"></div>
+</isdecorate>
+

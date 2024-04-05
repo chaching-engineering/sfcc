@@ -1,0 +1,36 @@
+<isdecorate template="application/menuframe">
+ 
+	<iscontent type="text/html" charset="UTF-8"> 
+	<isinclude template="custom/modules" /> 
+	<isbreadcrumbs bcurl1="${URLUtils.url('Chaching-SignUp')}" 
+		bctext1="${Resource.msg('chaching.signup.page','chaching',null)}" />
+		
+	<div class="chaching-wrapper">
+		<isinclude template="chaching/chachingheader">
+		<div class="info-wrapper">
+			<isinclude template="chaching/chachingoverview" />
+			<div class="user-guide">
+				${Resource.msg('chaching.signup.details','chaching',null)}
+			</div>
+			<div class="button-holder"
+				<span>
+					<a href="${pdict.accountUrl}" target="_blank">
+						<button type="button" name="signup" class="button button-bg-blue-white">
+							${Resource.msg('chaching.signup.button','chaching',null)}
+						</button>
+					</a>
+				</span>
+				<span class="or-separator">${Resource.msg('chaching.or.text','chaching',null)}</span>
+				<span>
+					<a href="${URLUtils.url('Chaching-Login')}">
+						<button type="button" name="connect-existing-account" class="button button-bg-blue-white">
+							${Resource.msg('chaching.connecting.existing.button','chaching',null)}
+						</button>
+					</a>
+				</span>
+			</div>
+		</div>
+
+		<isinclude template="chaching/resourceemailus"> 
+	</div>
+</isdecorate>

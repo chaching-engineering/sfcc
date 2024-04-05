@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="Order">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="chachingClickId">
+                <display-name xml:lang="x-default">Chaching Click Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingReturnLineItems">
+                <display-name xml:lang="x-default">Return Lineitems</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="isChachingOrder">
+                <display-name xml:lang="x-default">Is Chaching Order</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="isChachingPurchaseReturnAPIError">
+                <display-name xml:lang="x-default">Is Chaching Purchase Return API Error</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="isChachingReturnSuccess">
+                <display-name xml:lang="x-default">Is Chaching Return Success</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="isSendToChaching">
+                <display-name xml:lang="x-default">Is Send To Chaching</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="chaching">
+                <display-name xml:lang="x-default">Chaching</display-name>
+                <attribute attribute-id="isChachingOrder"/>
+                <attribute attribute-id="isSendToChaching"/>
+                <attribute attribute-id="chachingClickId"/>
+                <attribute attribute-id="isChachingReturnSuccess"/>
+                <attribute attribute-id="chachingReturnLineItems"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+	<type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="chachingAPIAccountIDDemo">
+                <display-name xml:lang="x-default">API Account ID (Demo)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIAccountIDLive">
+                <display-name xml:lang="x-default">API Account ID (Live)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIBaseUrlDemo">
+                <display-name xml:lang="x-default">API Base URL (Demo)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>https://dev.api.chaching.me</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIBaseUrlLive">
+                <display-name xml:lang="x-default">API Base URL (Live)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIEnvironment">
+                <display-name xml:lang="x-default">API Environment</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Demo</display>
+                        <value>demo</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Live</display>
+                        <value>live</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIVersionDemo">
+                <display-name xml:lang="x-default">API Version (Demo)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>2023-01</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAPIVersionLive">
+                <display-name xml:lang="x-default">API Version (Live)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingAuthorization">
+                <display-name xml:lang="x-default">Authorization Data</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingPaymentProviderSettings">
+                <display-name xml:lang="x-default">Payment Provider Setting</display-name>
+                <description xml:lang="x-default">Need to add payment provider order custom attribute details in Array of JSON.&#13;
+[{"providerReferenceAttrId":"Order custom attribute id  to save provider reference or transaction ID","providerOrderStatusAttrId":"Order custom attribute id  to save provider order custom status","providerCustomOrderStatus":"Provider custom order status after refund or return"}]</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingImageIndex">
+                <display-name xml:lang="x-default">Product Image index</display-name>
+                <description xml:lang="x-default">Zero based image index among the above mentioned image view type to export to Chaching</description>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>0</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingImageViewType">
+                <display-name xml:lang="x-default">Product Image View Type</display-name>
+                <description xml:lang="x-default">Product image view type to export to Chaching</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>large</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Chaching">
+                <display-name xml:lang="x-default">Chaching</display-name>
+                <attribute attribute-id="chachingAPIEnvironment"/>
+                <attribute attribute-id="chachingAPIBaseUrlDemo"/>
+                <attribute attribute-id="chachingAPIVersionDemo"/>
+                <attribute attribute-id="chachingAPIAccountIDDemo"/>
+                <attribute attribute-id="chachingAPIBaseUrlLive"/>
+                <attribute attribute-id="chachingAPIVersionLive"/>
+                <attribute attribute-id="chachingAPIAccountIDLive"/>
+                <attribute attribute-id="chachingPaymentProviderSettings"/>
+                <attribute attribute-id="chachingImageViewType"/>
+                <attribute attribute-id="chachingImageIndex"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+</metadata>
