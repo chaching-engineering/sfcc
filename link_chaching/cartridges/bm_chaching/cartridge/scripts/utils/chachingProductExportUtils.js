@@ -9,8 +9,10 @@ const SEP = File.SEPARATOR;
 var LogUtils = require('*/cartridge/scripts/utils/chachingLogUtils');
 var customCacheWebdav = require('*/cartridge/scripts/utils/customCacheWebdav');
 var chachingUtils = require('*/cartridge/scripts/utils/chachingHttpServiceUtils');
+var ociUtils = require('*/cartridge/scripts/utils/chachingOCIServiceUtils');
 var customLog = LogUtils.getLogger('chachingPreparePricebookCache');
 var csvFolderPath = File.IMPEX + SEP + 'customcache' + SEP + 'chaching' + SEP + Site.current.ID + SEP + 'exported_products';
+var exportedMasterProductsCsvName = 'exported_master_ids.csv';
 var deletedMasterIDs;
 
 var Utils = {
@@ -73,7 +75,7 @@ var Utils = {
         csvVariantsFolder.mkdirs();
 
         // Master csv file
-        var masterCSVFile = new File(csvFolderPath + SEP + 'exported_master_ids.csv');
+        var masterCSVFile = new File(csvFolderPath + SEP + exportedMasterProductsCsvName);
 
         if (masterCSVFile.exists()) {
             masterCSVFile.remove();
@@ -84,7 +86,7 @@ var Utils = {
      * @param {Object} exportedMasterIDs - Exported Master Product IDs as array
      */
     setExportedMasterIDsInCache: function (exportedMasterIDs) {
-        var csvFileProductsPath = csvFolderPath + SEP + 'exported_master_ids.csv';
+        var csvFileProductsPath = csvFolderPath + SEP + exportedMasterProductsCsvName;
         var csvFileProducts = new File(csvFileProductsPath);
 
         if (!csvFileProducts.exists()) {
@@ -265,12 +267,13 @@ var Utils = {
      * @returns {boolean} isDeleted
      */
     processDeletedVariant: function (variantID) {
+        var ociStatus = ociUtils.ociConfig.ociStatus;
         var isDeleted = false;
 
         var variant = ProductMgr.getProduct(variantID);
 
         if (variant) {
-            var availabilityModel = variant.getAvailabilityModel();
+            var availabilityModel = ociStatus === 'enabled' ? ociUtils.getOmniChannelInventory(variantID) : variant.getAvailabilityModel();
             var priceObject = variant.getPriceModel().price;
 
             if (!variant.online || !availabilityModel.orderable || priceObject.value === 0) {
@@ -325,6 +328,7 @@ var Utils = {
         var hasOrderableVariant = false;
         var variants;
         var variantsIterator;
+        var ociStatus = ociUtils.ociConfig.ociStatus;
 
         if (product.master) {
             variants = product.getVariants();
@@ -340,7 +344,7 @@ var Utils = {
             while (variantsIterator.hasNext()) {
                 variant = variantsIterator.next();
 
-                var availabilityModel = variant.getAvailabilityModel();
+                var availabilityModel = ociStatus === 'enabled' ? ociUtils.getOmniChannelInventory(variant.ID) : variant.getAvailabilityModel();
                 var priceObject = variant.getPriceModel().price;
 
                 if (variant.online && availabilityModel.orderable && priceObject.value > 0) {
@@ -368,6 +372,8 @@ var Utils = {
         var apiResponse = chachingUtils.chachingAPIClient(apiMethod, apiEndPoint, JSON.stringify(apiRequest));
 
         if (apiResponse && apiResponse.product && apiResponse.product.id) {
+            customLog.debug('Product Delete operation success for product: ' + productID);
+
             result = true;
         } else {
             customLog.debug('Product Delete operation failed for product: ' + productID);
@@ -394,18 +400,16 @@ var Utils = {
 
         var product = ProductMgr.getProduct(productID);
 
-        if (product) {
-            if (!product.online || !product.assignedToSiteCatalog) {
-                masterDeleteResult.deleted = Utils.deleteMasterFromChaching(productID);
-            } else {
-                var hasOrderableVariant = Utils.checkForOrderableVariant(product);
-
-                if (!hasOrderableVariant) {
-                    masterDeleteResult.deleted = Utils.deleteMasterFromChaching(productID);
-                }
-            }
-        } else {
+        if (!(product && !product.variant && !product.variationGroup && !product.optionProduct && !product.bundle && !product.productSet && product.online && product.assignedToSiteCatalog)) {
+            // Negating the export condition to delete products from Chaching
             masterDeleteResult.deleted = Utils.deleteMasterFromChaching(productID);
+        } else {
+            // If master level not required to delete then check on variants level
+            var hasOrderableVariant = Utils.checkForOrderableVariant(product);
+
+            if (!hasOrderableVariant) {
+                masterDeleteResult.deleted = Utils.deleteMasterFromChaching(productID);
+            }
         }
 
         if (!masterDeleteResult.deleted) {
@@ -416,8 +420,10 @@ var Utils = {
     },
     /**
      * Rewrite Exported Master CSV and Variants CSV
+     * @param {Object} deletedProductIDs - Deleted Master Product IDs
      */
-    rewriteExportedMasterCSV: function () {
+    rewriteExportedMasterCSV: function (deletedProductIDs) {
+        deletedMasterIDs = deletedProductIDs;
         var variantCSVFile;
         var i;
 
@@ -429,7 +435,7 @@ var Utils = {
             }
         }
 
-        var csvFileProductsPath = csvFolderPath + SEP + 'exported_master_ids.csv';
+        var csvFileProductsPath = csvFolderPath + SEP + exportedMasterProductsCsvName;
         var csvFileProducts = new File(csvFileProductsPath);
 
         if (csvFileProducts.exists()) {
@@ -477,7 +483,7 @@ var Utils = {
     deltaDeletedMasterProducts: function () {
         deletedMasterIDs = [];
         var updateMasterIDs = [];
-        var masterCSVFile = new File(csvFolderPath + SEP + 'exported_master_ids.csv');
+        var masterCSVFile = new File(csvFolderPath + SEP + exportedMasterProductsCsvName);
 
         if (masterCSVFile.exists()) {
             var FileReader = require('dw/io/FileReader');
@@ -506,11 +512,40 @@ var Utils = {
             csvFileReaderProducts.close();
 
             if (deletedMasterIDs.length) {
-                Utils.rewriteExportedMasterCSV();
+                Utils.rewriteExportedMasterCSV(deletedMasterIDs);
             }
         }
 
         return updateMasterIDs;
+    },
+    /**
+     * Checks if the master product ID exists in exported master ID CSV file
+     * @param {string} productID - Product ID
+     * @returns {boolean} isMasterFound
+     * */
+    isMasterAlreadyExported: function (productID) {
+        var masterCSVFile = new File(csvFolderPath + SEP + exportedMasterProductsCsvName);
+        var isMasterFound = false;
+
+        if (masterCSVFile.exists()) {
+            var FileReader = require('dw/io/FileReader');
+            var CSVStreamReader = require('dw/io/CSVStreamReader');
+            var csvFileReaderProducts = new FileReader(masterCSVFile, 'UTF-8');
+            var csvStreamReaderProducts = new CSVStreamReader(csvFileReaderProducts, ',');
+
+            var readLine = csvStreamReaderProducts.readNext();
+
+            while (readLine) {
+                if (readLine[0] === productID) {
+                    isMasterFound = true;
+                    break;
+                }
+
+                readLine = csvStreamReaderProducts.readNext();
+            }
+        }
+
+        return isMasterFound;
     }
 };
 

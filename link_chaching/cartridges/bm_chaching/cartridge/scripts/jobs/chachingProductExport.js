@@ -1,5 +1,7 @@
 'use strict';
 
+/* global session */
+
 /**
  * Exports products to Chaching API
  */
@@ -12,6 +14,7 @@ var Site;
 var ProductMgr;
 var LogUtils;
 var chachingUtils;
+var ociUtils;
 var productExportUtils;
 var customLog;
 var customAttrNames;
@@ -171,6 +174,7 @@ function populateMasterOrStandardPayload(product) {
     var category;
     var categories = [];
     var keywords;
+    var ociStatus = ociUtils.ociConfig.ociStatus;
 
     if (categoriesIterator) {
         while (categoriesIterator.hasNext()) {
@@ -186,8 +190,7 @@ function populateMasterOrStandardPayload(product) {
 
         while (variantsIterator.hasNext()) {
             variant = variantsIterator.next();
-
-            var availabilityModel = variant.getAvailabilityModel();
+            var availabilityModel = ociStatus === 'enabled' ? ociUtils.getOmniChannelInventory(variant.ID) : variant.getAvailabilityModel();
             priceObject = variant.getPriceModel().price;
 
             if (variant.online && availabilityModel.orderable && priceObject.value > 0) {
@@ -215,8 +218,8 @@ function populateMasterOrStandardPayload(product) {
 function initExportSingleProduct(product) {
     // if the product is not a variant then create the api request payload. Variant products will be considered under masters
     if (product && !product.variant && !product.variationGroup && !product.optionProduct && !product.bundle && !product.productSet && product.online && product.assignedToSiteCatalog) {
-        if (exportedMasterIDs.indexOf(product.ID) < 0) {
-            exportedMasterIDs.push(product.ID);
+        if (ociUtils.ociConfig.ociStatus === 'enabled' && session.privacy.renewSkuLevelOciCache) {
+            ociUtils.updateSkuLevelDeltaOciRecordsInCache(product);
         }
 
         var apiMethod = 'POST';
@@ -224,12 +227,12 @@ function initExportSingleProduct(product) {
         var productRequest = populateMasterOrStandardPayload(product);
 
         if (productRequest && productRequest.variants && productRequest.variants.length) {
+            customLog.debug('productRequest: ' + JSON.stringify(productRequest));
             var apiResponse = chachingUtils.chachingAPIClient(apiMethod, apiEndPoint, JSON.stringify(productRequest));
 
             if (!(apiResponse && apiResponse.product && apiResponse.product.id)) {
-                customLog.debug('Error on hitting API: ');
+                customLog.debug('Error on hitting API');
                 customLog.debug('productResponse: ' + JSON.stringify(apiResponse));
-                customLog.debug('productRequest: ' + JSON.stringify(productRequest));
 
                 consecutiveAPIErrorCount++;
 
@@ -242,7 +245,19 @@ function initExportSingleProduct(product) {
                 consecutiveAPIErrorCount = 0;
             }
 
+            if (exportedMasterIDs.indexOf(product.ID) < 0) {
+                exportedMasterIDs.push(product.ID);
+            }
+
             return true;
+        } else if (session.privacy.isChachingFullExport && productExportUtils.isMasterAlreadyExported(product.ID)) { // Full export and previously exported master product
+            customLog.debug('During the full export this product is found for deleting on Chaching: ' + product.ID);
+            productExportUtils.deleteMasterFromChaching(product.ID);
+            productExportUtils.rewriteExportedMasterCSV([product.ID]);
+        } else if (!session.privacy.isChachingFullExport) { // Delta export
+            customLog.debug('During the delta export this product is found for deleting on Chaching: ' + product.ID);
+            productExportUtils.deleteMasterFromChaching(product.ID);
+            productExportUtils.rewriteExportedMasterCSV([product.ID]);
         }
     }
 
@@ -300,8 +315,9 @@ function initGlobalVariables() {
     chachingUtils = require('*/cartridge/scripts/utils/chachingHttpServiceUtils');
     productExportUtils = require('~/cartridge/scripts/utils/chachingProductExportUtils');
     customCacheWebdav = require('*/cartridge/scripts/utils/customCacheWebdav');
+    ociUtils = require('*/cartridge/scripts/utils/chachingOCIServiceUtils');
     LogUtils = require('*/cartridge/scripts/utils/chachingLogUtils');
-    customLog = LogUtils.getLogger('chachingPreparePricebookCache');
+    customLog = LogUtils.getLogger('chachingProductExport');
 
     ProductMgr = require('dw/catalog/ProductMgr');
     File = require('dw/io/File');
@@ -318,6 +334,8 @@ function initGlobalVariables() {
  * Execution starting of the product full export module
  */
 function fullExport() {
+    session.privacy.isChachingFullExport = true;
+    session.privacy.renewSkuLevelOciCache = false;
     initGlobalVariables();
     productExportUtils.resetExportedMasterIDsInCache();
 
@@ -450,6 +468,8 @@ function findProcessXML(metaFile, deltaFolderPath) {
  * Read delta XML
  */
 function readDeltaXML() {
+    session.privacy.isChachingFullExport = false;
+    session.privacy.renewSkuLevelOciCache = true;
     initGlobalVariables();
 
     var i;
@@ -599,7 +619,13 @@ function setSalePriceCache() {
  */
 function setInventoryCache() {
     initGlobalVariables();
-    priceInventoryRoute('inventory', true);
+
+    if (ociUtils.ociConfig.ociStatus === 'disabled') { // default SFCC inventory
+        customLog.debug('Setting default SFCC inventory records in cache');
+        priceInventoryRoute('inventory', true);
+    } else {
+        customLog.debug('Omnichannel inventory switch is enabled in Custom Site Preferences, so skipping default SFCC inventory records');
+    }
 }
 
 /**
@@ -623,7 +649,92 @@ function deltaSalePrice() {
  */
 function deltaInventory() {
     initGlobalVariables();
-    priceInventoryRoute('inventory', false);
+
+    if (ociUtils.ociConfig.ociStatus === 'disabled') { // default SFCC inventory
+        priceInventoryRoute('inventory', false);
+    }
+}
+
+/**
+ * Process delta data for OmniChannel Inventory
+ * @param {Object} deltaMasterProductIDs - Delta Master Product IDs
+ */
+function processOmniChannelInventory(deltaMasterProductIDs) {
+    if (deltaMasterProductIDs.length) {
+        var product;
+
+        for (var i = 0; i < deltaMasterProductIDs.length; i++) {
+            product = ProductMgr.getProduct(deltaMasterProductIDs[i]);
+            initExportSingleProduct(product);
+        }
+
+        productExportUtils.setExportedMasterIDsInCache(deltaMasterProductIDs);
+    }
+}
+
+/**
+ * Delta process of OmniChannel Inventory
+ */
+function deltaOmniChannelInventory() {
+    initGlobalVariables();
+
+    if (ociUtils.ociConfig.ociStatus === 'enabled') { // Omnichannel inventory
+        customLog.debug('Setting the Omnichannel inventory delta records in custom cache');
+
+        session.privacy.isChachingFullExport = false;
+        session.privacy.renewSkuLevelOciCache = false;
+        var availableDeltas = ociUtils.getAvailabilityDeltas();
+
+        if (availableDeltas && availableDeltas.nextDeltaToken) {
+            try {
+                var deltaTokenData = {
+                    deltaToken: availableDeltas.nextDeltaToken
+                };
+                ociUtils.saveDeltaToken(deltaTokenData);
+            } catch (e) {
+                customLog.error('Error trying to save delta token: ' + e.message);
+            }
+
+            var records = availableDeltas.records;
+
+            if (records.length > 0) {
+                customLog.debug('Delta OCI records: ' + JSON.stringify(records));
+                var deltaMasterProductIDs = [];
+                var product;
+                var masterProduct;
+
+                for (var i = 0; i < records.length; i++) {
+                    var record = records[i];
+
+                    if (record.sku) {
+                        ociUtils.saveInventoryRecord(record);
+                        product = ProductMgr.getProduct(record.sku);
+
+                        if (product && !product.variationGroup && !product.optionProduct && !product.bundle && !product.productSet && product.online && product.assignedToSiteCatalog) {
+                            if (product.variant) {
+                                masterProduct = product.variationModel ? product.variationModel.master : null;
+
+                                if (masterProduct && deltaMasterProductIDs.indexOf(masterProduct.ID) < 0) {
+                                    deltaMasterProductIDs.push(masterProduct.ID);
+                                }
+                            } else if (deltaMasterProductIDs.indexOf(product.ID) < 0) {
+                                deltaMasterProductIDs.push(product.ID);
+                            }
+                        }
+                    }
+                }
+
+                customLog.debug('deltaMasterProductIDs: ' + JSON.stringify(deltaMasterProductIDs));
+                processOmniChannelInventory(deltaMasterProductIDs);
+            } else {
+                customLog.debug('Omnichannel inventory delta records not found');
+            }
+        } else {
+            customLog.error(availableDeltas.message);
+        }
+    } else { // default SFCC inventory will be processed in another job step
+        customLog.debug('Skipping the Omnichannel delta export, because Omnichannel Inventory switch is Disabled in custom site preferences');
+    }
 }
 
 /**
@@ -651,5 +762,6 @@ module.exports = {
     deltaSalePrice: deltaSalePrice,
     setInventoryCache: setInventoryCache,
     deltaInventory: deltaInventory,
+    deltaOmniChannelInventory: deltaOmniChannelInventory,
     deltaDeletedProducts: deltaDeletedProducts
 };
