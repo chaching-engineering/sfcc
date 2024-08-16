@@ -84,6 +84,20 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="chachingOCIAPIClientId">
+                <display-name xml:lang="x-default">API Client ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCIAPIClientSecret">
+                <display-name xml:lang="x-default">API Client Secret</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
             <attribute-definition attribute-id="chachingAPIEnvironment">
                 <display-name xml:lang="x-default">API Environment</display-name>
                 <type>enum-of-string</type>
@@ -117,6 +131,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="chachingAuthorization">
                 <display-name xml:lang="x-default">Authorization Data</display-name>
+                <description xml:lang="x-default">Should not be moved to custom cache because from storefront calls cannot save refresh token data in custom cache.</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>true</externally-managed-flag>
@@ -128,6 +143,69 @@
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCIInventoryLevelField">
+                <display-name xml:lang="x-default">Inventory Level Field</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">ATO</display>
+                        <value>ato</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">ATF</display>
+                        <value>atf</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">onHand</display>
+                        <value>onHand</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCILocationGroups">
+                <display-name xml:lang="x-default">Location Groups</display-name>
+                <type>set-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCIBaseUrl">
+                <display-name xml:lang="x-default">API Base URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCIStatus">
+                <display-name xml:lang="x-default">Omnichannel Inventory</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Enabled</display>
+                        <value>enabled</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Disabled</display>
+                        <value>disabled</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCITenantGroupId">
+                <display-name xml:lang="x-default">Tenant Group ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="chachingOCITenantId">
+                <display-name xml:lang="x-default">Tenant ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="chachingImageIndex">
                 <display-name xml:lang="x-default">Product Image index</display-name>
@@ -148,8 +226,8 @@
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
-            <attribute-group group-id="Chaching">
-                <display-name xml:lang="x-default">Chaching</display-name>
+            <attribute-group group-id="Chaching General">
+                <display-name xml:lang="x-default">Chaching General Configurations</display-name>
                 <attribute attribute-id="chachingAPIEnvironment"/>
                 <attribute attribute-id="chachingAPIBaseUrlDemo"/>
                 <attribute attribute-id="chachingAPIVersionDemo"/>
@@ -160,6 +238,17 @@
                 <attribute attribute-id="chachingPaymentProviderSettings"/>
                 <attribute attribute-id="chachingImageViewType"/>
                 <attribute attribute-id="chachingImageIndex"/>
+            </attribute-group>
+            <attribute-group group-id="Chaching Omnichannel Inventory">
+                <display-name xml:lang="x-default">Chaching Omnichannel Inventory Configurations</display-name>
+                <attribute attribute-id="chachingOCIStatus"/>
+                <attribute attribute-id="chachingOCITenantId"/>
+                <attribute attribute-id="chachingOCIAPIClientId"/>
+                <attribute attribute-id="chachingOCIAPIClientSecret"/>
+                <attribute attribute-id="chachingOCITenantGroupId"/>
+                <attribute attribute-id="chachingOCIBaseUrl"/>
+                <attribute attribute-id="chachingOCILocationGroups"/>
+                <attribute attribute-id="chachingOCIInventoryLevelField"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

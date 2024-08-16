@@ -77,9 +77,14 @@ Utils.config = {
  */
 Utils.serviceParseResponse = function (service, httpClient) {
     var resp;
+    var contentType = httpClient.responseHeaders.get('Content-Type') ? httpClient.responseHeaders.get('Content-Type')[0] : '';
 
     if (httpClient.statusCode === 200 || httpClient.statusCode === 201) {
-        resp = JSON.parse(httpClient.getText());
+        if (contentType === 'application/octet-stream') {
+            resp = httpClient.getText();
+        } else {
+            resp = JSON.parse(httpClient.getText());
+        }
     } else {
         Utils.log.error('Error on http request: ' + httpClient.getErrorText());
         resp = null;
@@ -511,6 +516,5 @@ Utils.createPurchaseReturn = function (order, providerReference) {
         Utils.log.error('Failed to purchase return for order No ' + order.orderNo);
     }
 };
-
 
 module.exports = Utils;

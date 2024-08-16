@@ -2,6 +2,50 @@
     "step-types": {
         "script-module-step": [
             {
+                "@type-id":"custom.ChachingOCIExportFull",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingOCIExportFull.js",
+                "description":"OCI API call for full export",
+                "function":"exportOCI",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.ChachingOCIExportDelta",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "description":"OCI API call for full export",
+                "function":"deltaOmniChannelInventory",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        },
+                        {
+                            "@code": "WARN",
+                            "description": "Used when small, but acceptable problems occurred."
+                        }
+                    ]
+                }
+            },
+            {
                 "@type-id":"custom.ChachingProductExportFull",
                 "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
                 "description":"Export products to Chaching",

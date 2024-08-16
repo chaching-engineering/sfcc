@@ -38,6 +38,10 @@
         </flow>
         <flow>
             <context site-id="RefArch"/>
+            <step step-id="chaching-oci-export-full" type="custom.ChachingOCIExportFull" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
             <step step-id="script-chaching-deleted-products-delta" type="custom.ChachingDeletedProductsDelta" enforce-restart="false">
                 <description/>
                 <parameters/>
@@ -134,6 +138,10 @@
                 <parameters/>
             </step>
             <step step-id="script-chaching-salepricebook-delta" type="custom.ChachingSalePricebookDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="chaching-oci-export-delta" type="custom.ChachingOCIExportDelta" enforce-restart="false">
                 <description/>
                 <parameters/>
             </step>
