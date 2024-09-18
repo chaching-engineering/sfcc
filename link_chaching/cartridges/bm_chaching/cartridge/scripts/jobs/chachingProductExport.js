@@ -660,6 +660,8 @@ function deltaInventory() {
  * @param {Object} deltaMasterProductIDs - Delta Master Product IDs
  */
 function processOmniChannelInventory(deltaMasterProductIDs) {
+    initGlobalVariables();
+
     if (deltaMasterProductIDs.length) {
         var product;
 
@@ -669,71 +671,6 @@ function processOmniChannelInventory(deltaMasterProductIDs) {
         }
 
         productExportUtils.setExportedMasterIDsInCache(deltaMasterProductIDs);
-    }
-}
-
-/**
- * Delta process of OmniChannel Inventory
- */
-function deltaOmniChannelInventory() {
-    initGlobalVariables();
-
-    if (ociUtils.ociConfig.ociStatus === 'enabled') { // Omnichannel inventory
-        customLog.debug('Setting the Omnichannel inventory delta records in custom cache');
-
-        session.privacy.isChachingFullExport = false;
-        session.privacy.renewSkuLevelOciCache = false;
-        var availableDeltas = ociUtils.getAvailabilityDeltas();
-
-        if (availableDeltas && availableDeltas.nextDeltaToken) {
-            try {
-                var deltaTokenData = {
-                    deltaToken: availableDeltas.nextDeltaToken
-                };
-                ociUtils.saveDeltaToken(deltaTokenData);
-            } catch (e) {
-                customLog.error('Error trying to save delta token: ' + e.message);
-            }
-
-            var records = availableDeltas.records;
-
-            if (records.length > 0) {
-                customLog.debug('Delta OCI records: ' + JSON.stringify(records));
-                var deltaMasterProductIDs = [];
-                var product;
-                var masterProduct;
-
-                for (var i = 0; i < records.length; i++) {
-                    var record = records[i];
-
-                    if (record.sku) {
-                        ociUtils.saveInventoryRecord(record);
-                        product = ProductMgr.getProduct(record.sku);
-
-                        if (product && !product.variationGroup && !product.optionProduct && !product.bundle && !product.productSet && product.online && product.assignedToSiteCatalog) {
-                            if (product.variant) {
-                                masterProduct = product.variationModel ? product.variationModel.master : null;
-
-                                if (masterProduct && deltaMasterProductIDs.indexOf(masterProduct.ID) < 0) {
-                                    deltaMasterProductIDs.push(masterProduct.ID);
-                                }
-                            } else if (deltaMasterProductIDs.indexOf(product.ID) < 0) {
-                                deltaMasterProductIDs.push(product.ID);
-                            }
-                        }
-                    }
-                }
-
-                customLog.debug('deltaMasterProductIDs: ' + JSON.stringify(deltaMasterProductIDs));
-                processOmniChannelInventory(deltaMasterProductIDs);
-            } else {
-                customLog.debug('Omnichannel inventory delta records not found');
-            }
-        } else {
-            customLog.error(availableDeltas.message);
-        }
-    } else { // default SFCC inventory will be processed in another job step
-        customLog.debug('Skipping the Omnichannel delta export, because Omnichannel Inventory switch is Disabled in custom site preferences');
     }
 }
 
@@ -762,6 +699,6 @@ module.exports = {
     deltaSalePrice: deltaSalePrice,
     setInventoryCache: setInventoryCache,
     deltaInventory: deltaInventory,
-    deltaOmniChannelInventory: deltaOmniChannelInventory,
-    deltaDeletedProducts: deltaDeletedProducts
+    deltaDeletedProducts: deltaDeletedProducts,
+    processOmniChannelInventory: processOmniChannelInventory
 };
