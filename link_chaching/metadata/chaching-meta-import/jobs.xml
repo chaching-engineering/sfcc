@@ -199,5 +199,54 @@
             </run-recurring>
         </triggers>
     </job>
+    <job job-id="Chaching-Omnichannel-Inventory-Export-Full-RefArch">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="Sites"/>
+            <step step-id="chaching-catalog-export-full-xml" type="ExportCatalog" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="CatalogID">apparel-m-catalog</parameter>
+                    <parameter name="ExportCategories">false</parameter>
+                    <parameter name="ExportProducts">true</parameter>
+                    <parameter name="ExportCategoryAssignments">false</parameter>
+                    <parameter name="ExportProductOptions">false</parameter>
+                    <parameter name="ExportRecommendations">false</parameter>
+                    <parameter name="ExportVariationAttributes">false</parameter>
+                    <parameter name="ExportFile">/chaching/export/RefArch/chaching-export-catalog</parameter>
+                    <parameter name="OverwriteExportFile">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="chaching-oci-export-full" type="custom.ChachingOCIExportFull" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="script-chaching-deleted-products-delta" type="custom.ChachingDeletedProductsDelta" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+            <step step-id="set-last-exported-time" type="custom.ChachingSetLastExportedTime" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ObjectTypeName">product</parameter>
+                </parameters>
+            </step>
+            <step step-id="script-chaching-product-export-full" type="custom.ChachingProductExportFull" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2024-01-16Z</date>
+                <time>09:49:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
 
 </jobs>

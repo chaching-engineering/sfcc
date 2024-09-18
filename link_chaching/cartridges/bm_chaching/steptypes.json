@@ -25,7 +25,7 @@
             },
             {
                 "@type-id":"custom.ChachingOCIExportDelta",
-                "module":"bm_chaching/cartridge/scripts/jobs/chachingProductExport.js",
+                "module":"bm_chaching/cartridge/scripts/jobs/chachingOCIExportDelta.js",
                 "description":"OCI API call for full export",
                 "function":"deltaOmniChannelInventory",
                 "status-codes": {

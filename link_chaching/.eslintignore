@@ -1,5 +1,6 @@
 cartridges/int_deliverysolutions_sfra/cartridge/static
 cartridges/bm_chaching/cartridge/static/default/lib/jquery/jquery-2.1.1.min.js
 cartridges/bm_chaching/cartridge/static/default/js/jquery.dataTables.js
+cartridges/bm_chaching/cartridge/scripts/jobs/test.js
 coverage/
 test/*
