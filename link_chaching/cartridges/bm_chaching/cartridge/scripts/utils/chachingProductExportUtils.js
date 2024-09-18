@@ -63,10 +63,11 @@ var Utils = {
 
         if (csvVariantsFolder.exists() && csvVariantsFolder.directory) {
             var variantCSVList = csvVariantsFolder.listFiles();
-            var variantCSVs = variantCSVList.size() ? variantCSVList.toArray() : [];
+            var variantCSVs = variantCSVList.iterator();
 
-            for (var i = 0; i < variantCSVs.length; i++) {
-                variantCSVs[i].remove();
+            while (variantCSVs.hasNext()) {
+                let variantCSV = variantCSVs.next();
+                variantCSV.remove();
             }
 
             csvVariantsFolder.remove();
@@ -82,10 +83,36 @@ var Utils = {
         }
     },
     /**
+     * Returns the batch + index in batch for the passed in product ID
+     * @param {Array<Array<string>>} productArray - Product Array
+     * @param {number} currentBatch - Current bach index
+     * @param {string} productID - Product ID
+     * @returns {number | Array<number>} Batch index
+     */
+    findIndexInBatch: function (productArray, currentBatch, productID) {
+        for (let i = 0; i <= currentBatch; i++) {
+            let currentIndex = productArray[i].indexOf(productID);
+            if (currentIndex !== -1) {
+                return [i, currentIndex];
+            }
+        }
+
+        return -1;
+    },
+    /**
+     * Makes sure theproduct ID is File path compatible by replacing certain special characters
+     * @param {string} productID - Product ID
+     * @returns {string} Product ID
+     */
+    cleanProductID: function (productID) {
+        return productID.replace(/[\\/]/gm, '-');
+    },
+    /**
      * Sets Exported Master IDs in Cache
      * @param {Object} exportedMasterIDs - Exported Master Product IDs as array
+     * @param {number} productIdBatchNumber - Product ID's batch number
      */
-    setExportedMasterIDsInCache: function (exportedMasterIDs) {
+    setExportedMasterIDsInCache: function (exportedMasterIDs, productIdBatchNumber) {
         var csvFileProductsPath = csvFolderPath + SEP + exportedMasterProductsCsvName;
         var csvFileProducts = new File(csvFileProductsPath);
 
@@ -108,22 +135,24 @@ var Utils = {
         var csvStreamWriterProducts = new CSVStreamWriter(csvFileWriterProducts, ',');
 
         var arrIndex;
-        var i;
         var readLine = csvStreamReaderProducts.readNext();
 
         while (readLine) {
-            arrIndex = exportedMasterIDs.indexOf(readLine[0]);
+            let firstLine = readLine[0];
+            arrIndex = this.findIndexInBatch(exportedMasterIDs, productIdBatchNumber, firstLine);
 
-            if (arrIndex > -1) {
-                exportedMasterIDs.splice(arrIndex, 1);
+            if (arrIndex !== -1) {
+                exportedMasterIDs[arrIndex[0]].splice(arrIndex[1], 1);
             }
 
             csvStreamWriterProducts.writeNext(readLine);
             readLine = csvStreamReaderProducts.readNext();
         }
 
-        for (i = 0; i < exportedMasterIDs.length; i++) {
-            csvStreamWriterProducts.writeNext(exportedMasterIDs[i]);
+        for (let i = 0; i <= productIdBatchNumber; i++) {
+            for (let j = 0; j < exportedMasterIDs[i].length; j++) {
+                csvStreamWriterProducts.writeNext(exportedMasterIDs[i][j]);
+            }
         }
 
         csvStreamWriterProducts.close();
@@ -141,7 +170,7 @@ var Utils = {
      * @param {Object} exportedVariantIDs - Exported Variant IDs Array
      */
     setExportedVariantIDsInCache: function (masterID, exportedVariantIDs) {
-        var csvFileProductsPath = csvFolderPath + SEP + 'variants' + SEP + masterID + '.csv';
+        var csvFileProductsPath = csvFolderPath + SEP + 'variants' + SEP + this.cleanProductID(masterID) + '.csv';
         var csvFileProducts = new File(csvFileProductsPath);
 
         if (!csvFileProducts.exists()) {
@@ -293,7 +322,7 @@ var Utils = {
     isVariantDeleted: function (productID) {
         var variantDeleted = false;
 
-        var variantCSVFile = new File(csvFolderPath + SEP + 'variants' + SEP + productID + '.csv');
+        var variantCSVFile = new File(csvFolderPath + SEP + 'variants' + SEP + this.cleanProductID(productID) + '.csv');
 
         if (variantCSVFile.exists()) {
             var FileReader = require('dw/io/FileReader');
@@ -428,7 +457,9 @@ var Utils = {
         var i;
 
         for (i = 0; i < deletedMasterIDs.length; i++) {
-            variantCSVFile = new File(csvFolderPath + SEP + 'variants' + SEP + deletedMasterIDs[i] + '.csv');
+            variantCSVFile = new File(
+                csvFolderPath + SEP + 'variants' + SEP + this.cleanProductID(deletedMasterIDs[i]) + '.csv'
+            );
 
             if (variantCSVFile.exists()) {
                 variantCSVFile.remove();

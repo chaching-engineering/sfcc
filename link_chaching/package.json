@@ -1,6 +1,6 @@
 {
   "name": "chaching",
-  "version": "24.2.1",
+  "version": "24.2.2",
   "description": "Chaching link cartridge",
   "main": "index.js",
   "engines": {
