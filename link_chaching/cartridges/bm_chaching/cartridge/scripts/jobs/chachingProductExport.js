@@ -22,9 +22,25 @@ var variationModel;
 var variationAttributes;
 var customCacheWebdav;
 var exportedMasterIDs;
+var productIdBatchNumber;
 var imageViewTypes;
 var consecutiveAPIErrorCount;
 var SEP;
+
+const BATCH_SIZE = 20000;
+
+/**
+ * Adds the product ID to the current exportedMasterIDs batch or creates a new one if full
+ * @param {string} productID - Product ID
+ */
+function addToBatch(productID) {
+    if (exportedMasterIDs[productIdBatchNumber].length >= BATCH_SIZE) {
+        exportedMasterIDs.push([productID]);
+        productIdBatchNumber++;
+    } else {
+        exportedMasterIDs[productIdBatchNumber].push(productID);
+    }
+}
 
 /**
  * Gets attributes field of API Request
@@ -245,8 +261,8 @@ function initExportSingleProduct(product) {
                 consecutiveAPIErrorCount = 0;
             }
 
-            if (exportedMasterIDs.indexOf(product.ID) < 0) {
-                exportedMasterIDs.push(product.ID);
+            if (productExportUtils.findIndexInBatch(exportedMasterIDs, productIdBatchNumber, product.ID) === -1) {
+                addToBatch(product.ID);
             }
 
             return true;
@@ -300,7 +316,7 @@ function processXML(xmlFile) {
         }
     }
 
-    productExportUtils.setExportedMasterIDsInCache(exportedMasterIDs);
+    productExportUtils.setExportedMasterIDsInCache(exportedMasterIDs, productIdBatchNumber);
 
     xmlStreamReader.close();
     xmlFileReader.close();
@@ -326,7 +342,8 @@ function initGlobalVariables() {
 
     customAttrNames = productExportUtils.getCustomAttrNames();
     imageViewTypes = productExportUtils.getImageViewTypesFromCache();
-    exportedMasterIDs = [];
+    exportedMasterIDs = [[]];
+    productIdBatchNumber = 0;
     consecutiveAPIErrorCount = 0;
 }
 
@@ -515,7 +532,14 @@ function comparePriceInventoryInCache(productID, contentXML, dataType) {
             if (product.variant) {
                 masterProduct = product.variationModel ? product.variationModel.master : null;
 
-                if (masterProduct && exportedMasterIDs.indexOf(masterProduct.ID) < 0) {
+                if (
+                    masterProduct &&
+                    productExportUtils.findIndexInBatch(
+                        exportedMasterIDs,
+                        productIdBatchNumber,
+                        masterProduct.ID
+                    ) === -1
+                ) {
                     initExportSingleProduct(masterProduct);
                 }
             } else {
@@ -574,7 +598,7 @@ function processPriceInventoryXML(xmlFile, dataType, isCacheGenerate) {
     }
 
     if (!isCacheGenerate) {
-        productExportUtils.setExportedMasterIDsInCache(exportedMasterIDs);
+        productExportUtils.setExportedMasterIDsInCache(exportedMasterIDs, productIdBatchNumber);
     }
 
     xmlStreamReader.close();
